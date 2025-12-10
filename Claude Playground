@@ -1,1 +1,8 @@
+# Navigate to your local repository
+cd /path/to/Pasha-RWA.xyz-Repo
+
+# Pull the latest changes
+git pull origin claude/simple-calculator-01BoDXx61FymGyzEaqPrFAJc
+
+# Then open index.html in Safari
 
