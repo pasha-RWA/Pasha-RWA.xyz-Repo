@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="previous-operand" id="previous"></div>
+            <div class="current-operand" id="current">0</div>
+        </div>
+        <div class="buttons">
+            <button class="button span-2" onclick="calculator.clear()">AC</button>
+            <button class="button" onclick="calculator.delete()">DEL</button>
+            <button class="button operator" onclick="calculator.chooseOperation('÷')">÷</button>
+
+            <button class="button number" onclick="calculator.appendNumber('7')">7</button>
+            <button class="button number" onclick="calculator.appendNumber('8')">8</button>
+            <button class="button number" onclick="calculator.appendNumber('9')">9</button>
+            <button class="button operator" onclick="calculator.chooseOperation('×')">×</button>
+
+            <button class="button number" onclick="calculator.appendNumber('4')">4</button>
+            <button class="button number" onclick="calculator.appendNumber('5')">5</button>
+            <button class="button number" onclick="calculator.appendNumber('6')">6</button>
+            <button class="button operator" onclick="calculator.chooseOperation('-')">-</button>
+
+            <button class="button number" onclick="calculator.appendNumber('1')">1</button>
+            <button class="button number" onclick="calculator.appendNumber('2')">2</button>
+            <button class="button number" onclick="calculator.appendNumber('3')">3</button>
+            <button class="button operator" onclick="calculator.chooseOperation('+')">+</button>
+
+            <button class="button number" onclick="calculator.appendNumber('0')">0</button>
+            <button class="button number" onclick="calculator.appendNumber('.')">.</button>
+            <button class="button span-2 equals" onclick="calculator.compute()">=</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
