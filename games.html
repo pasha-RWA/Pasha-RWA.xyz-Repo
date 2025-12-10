@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasha RWA - Games & Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .card p {
+            text-align: center;
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.05em;
+        }
+
+        .card .play-btn {
+            display: block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .card .play-btn:hover {
+            opacity: 0.9;
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 40px;
+            padding-top: 20px;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Pasha RWA</h1>
+        <p class="subtitle">Games & Tools Collection</p>
+
+        <div class="grid">
+            <a href="brick-breaker.html" class="card">
+                <div class="card-icon">🧱</div>
+                <h2>Brick Breaker</h2>
+                <p>Classic brick breaking game with paddle controls, multiple levels, and progressive difficulty. Break all the bricks to advance!</p>
+                <span class="play-btn">Play Now →</span>
+            </a>
+
+            <a href="index.html" class="card">
+                <div class="card-icon">🔢</div>
+                <h2>Calculator</h2>
+                <p>A simple, elegant calculator for basic arithmetic operations. Clean interface with all essential functions.</p>
+                <span class="play-btn">Open Calculator →</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>Built with ❤️ by Pasha RWA</p>
+            <p><a href="https://github.com/pasha-RWA/Pasha-RWA.xyz-Repo" target="_blank">View on GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>
