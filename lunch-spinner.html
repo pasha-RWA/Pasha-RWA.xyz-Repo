@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunch Spinner Wheel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .spinner-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #fff;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+            z-index: 10;
+        }
+
+        #wheel {
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4),
+                        inset 0 0 20px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.1s ease-out;
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .center-circle::after {
+            content: '🍽️';
+            font-size: 24px;
+        }
+
+        .spin-btn {
+            margin-top: 30px;
+            padding: 18px 60px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(145deg, #ff6b6b, #ee5a5a);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(238, 90, 90, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(238, 90, 90, 0.5);
+            background: linear-gradient(145deg, #ff7b7b, #ff6a6a);
+        }
+
+        .spin-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 25px 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .result-container.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .result-container h2 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .result-container .winner {
+            color: #764ba2;
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            #wheel {
+                width: 320px;
+                height: 320px;
+            }
+
+            .spin-btn {
+                padding: 15px 40px;
+                font-size: 1.1rem;
+            }
+
+            .result-container .winner {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="games.html" class="back-link">← Back to Games</a>
+
+    <div class="header">
+        <h1>Lunch Spinner</h1>
+        <p>Where should the team eat today?</p>
+    </div>
+
+    <div class="spinner-container">
+        <div class="wheel-wrapper">
+            <div class="pointer"></div>
+            <canvas id="wheel" width="400" height="400"></canvas>
+            <div class="center-circle"></div>
+        </div>
+
+        <button class="spin-btn" id="spinBtn">Spin!</button>
+
+        <div class="result-container" id="result">
+            <h2>Today's lunch destination:</h2>
+            <div class="winner" id="winner"></div>
+        </div>
+
+        <p class="instructions">Click the button or press SPACE to spin</p>
+    </div>
+
+    <script>
+        const restaurants = [
+            { name: 'Chipotle', color: '#FF6B6B' },
+            { name: 'Ten Ichi', color: '#4ECDC4' },
+            { name: 'Glaze', color: '#FFE66D' },
+            { name: "Fini's", color: '#95E1D3' },
+            { name: 'Springbone', color: '#F38181' },
+            { name: 'Oasis', color: '#AA96DA' },
+            { name: '7th Street', color: '#FCBAD3' },
+            { name: 'Court Street', color: '#A8D8EA' },
+            { name: 'Dig', color: '#FFB347' },
+            { name: 'Cava', color: '#98D8C8' }
+        ];
+
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultContainer = document.getElementById('result');
+        const winnerDisplay = document.getElementById('winner');
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = canvas.width / 2 - 10;
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel(rotation = 0) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const sliceAngle = (2 * Math.PI) / restaurants.length;
+
+            restaurants.forEach((restaurant, index) => {
+                const startAngle = index * sliceAngle + rotation;
+                const endAngle = startAngle + sliceAngle;
+
+                // Draw slice
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+
+                ctx.fillStyle = restaurant.color;
+                ctx.fill();
+
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Draw text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 14px Segoe UI, sans-serif';
+                ctx.fillText(restaurant.name, radius - 20, 5);
+                ctx.restore();
+            });
+
+            // Draw outer ring
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+        }
+
+        function getWinner(rotation) {
+            // The pointer is at the top (270 degrees or -90 degrees)
+            // We need to find which slice is at that position
+            const normalizedRotation = rotation % (2 * Math.PI);
+            const sliceAngle = (2 * Math.PI) / restaurants.length;
+
+            // Calculate which slice is under the pointer
+            // The pointer is at 3π/2 (270 degrees, pointing down from top)
+            const pointerAngle = (3 * Math.PI / 2 - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
+            const winnerIndex = Math.floor(pointerAngle / sliceAngle) % restaurants.length;
+
+            return restaurants[winnerIndex];
+        }
+
+        function spin() {
+            if (isSpinning) return;
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            resultContainer.classList.remove('show');
+
+            // Random spin: 5-10 full rotations plus random position
+            const spinAmount = (5 + Math.random() * 5) * 2 * Math.PI + Math.random() * 2 * Math.PI;
+            const targetRotation = currentRotation + spinAmount;
+            const duration = 5000 + Math.random() * 2000; // 5-7 seconds
+            const startTime = performance.now();
+            const startRotation = currentRotation;
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function for smooth deceleration
+                const easeOut = 1 - Math.pow(1 - progress, 4);
+
+                currentRotation = startRotation + spinAmount * easeOut;
+                drawWheel(currentRotation);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+
+                    const winner = getWinner(currentRotation);
+                    winnerDisplay.textContent = winner.name;
+                    resultContainer.classList.add('show');
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Event listeners
+        spinBtn.addEventListener('click', spin);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !isSpinning) {
+                e.preventDefault();
+                spin();
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (!isSpinning) spin();
+        });
+
+        // Initial draw
+        drawWheel(currentRotation);
+    </script>
+</body>
+</html>
