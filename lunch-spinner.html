@@ -237,7 +237,8 @@
             { name: 'Court Street', color: '#A8D8EA' },
             { name: 'Dig', color: '#FFB347' },
             { name: 'Cava', color: '#98D8C8' },
-            { name: "Apollo's Bagels", color: '#DDA0DD' }
+            { name: "Apollo's Bagels", color: '#DDA0DD' },
+            { name: 'Peter Luger', color: '#8B0000', tiny: true }
         ];
 
         const canvas = document.getElementById('wheel');
@@ -253,13 +254,30 @@
         let currentRotation = 0;
         let isSpinning = false;
 
+        // Calculate slice angles - tiny slices get 3% of the wheel
+        const tinySliceAngle = (2 * Math.PI) * 0.03;
+        const tinyCount = restaurants.filter(r => r.tiny).length;
+        const normalCount = restaurants.length - tinyCount;
+        const normalSliceAngle = (2 * Math.PI - (tinySliceAngle * tinyCount)) / normalCount;
+
+        function getSliceAngle(restaurant) {
+            return restaurant.tiny ? tinySliceAngle : normalSliceAngle;
+        }
+
+        function getStartAngle(index, rotation) {
+            let angle = rotation;
+            for (let i = 0; i < index; i++) {
+                angle += getSliceAngle(restaurants[i]);
+            }
+            return angle;
+        }
+
         function drawWheel(rotation = 0) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const sliceAngle = (2 * Math.PI) / restaurants.length;
-
             restaurants.forEach((restaurant, index) => {
-                const startAngle = index * sliceAngle + rotation;
+                const sliceAngle = getSliceAngle(restaurant);
+                const startAngle = getStartAngle(index, rotation);
                 const endAngle = startAngle + sliceAngle;
 
                 // Draw slice
@@ -280,9 +298,9 @@
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startAngle + sliceAngle / 2);
                 ctx.textAlign = 'right';
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 14px Segoe UI, sans-serif';
-                ctx.fillText(restaurant.name, radius - 20, 5);
+                ctx.fillStyle = restaurant.tiny ? '#fff' : '#333';
+                ctx.font = restaurant.tiny ? 'bold 6px Segoe UI, sans-serif' : 'bold 14px Segoe UI, sans-serif';
+                ctx.fillText(restaurant.name, radius - 20, restaurant.tiny ? 2 : 5);
                 ctx.restore();
             });
 
@@ -295,17 +313,20 @@
         }
 
         function getWinner(rotation) {
-            // The pointer is at the top (270 degrees or -90 degrees)
-            // We need to find which slice is at that position
+            // The pointer is at the top (270 degrees or 3π/2)
             const normalizedRotation = rotation % (2 * Math.PI);
-            const sliceAngle = (2 * Math.PI) / restaurants.length;
-
-            // Calculate which slice is under the pointer
-            // The pointer is at 3π/2 (270 degrees, pointing down from top)
             const pointerAngle = (3 * Math.PI / 2 - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
-            const winnerIndex = Math.floor(pointerAngle / sliceAngle) % restaurants.length;
 
-            return restaurants[winnerIndex];
+            // Find which slice contains this angle
+            let currentAngle = 0;
+            for (let i = 0; i < restaurants.length; i++) {
+                const sliceAngle = getSliceAngle(restaurants[i]);
+                if (pointerAngle >= currentAngle && pointerAngle < currentAngle + sliceAngle) {
+                    return restaurants[i];
+                }
+                currentAngle += sliceAngle;
+            }
+            return restaurants[0];
         }
 
         function spin() {
