@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Love You Kate ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0ec 50%, #ffd6e7 100%);
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float-up 8s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 40px;
+        }
+
+        .heart {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            animation: heartbeat 1.2s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 77, 109, 0.6));
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 160px;
+            background: linear-gradient(180deg, #ff4d6d 0%, #c9184a 50%, #a4133c 100%);
+            border-radius: 100px 100px 0 0;
+        }
+
+        .heart::before {
+            left: 100px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            14% {
+                transform: scale(1.15);
+            }
+            28% {
+                transform: scale(1);
+            }
+            42% {
+                transform: scale(1.1);
+            }
+            70% {
+                transform: scale(1);
+            }
+        }
+
+        .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255, 77, 109, 0.4) 0%, transparent 70%);
+            animation: pulse-glow 1.2s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        .name {
+            font-size: 4rem;
+            color: #c9184a;
+            text-shadow:
+                2px 2px 4px rgba(201, 24, 74, 0.3),
+                0 0 40px rgba(255, 77, 109, 0.4);
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            animation: name-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes name-glow {
+            0% {
+                text-shadow:
+                    2px 2px 4px rgba(201, 24, 74, 0.3),
+                    0 0 40px rgba(255, 77, 109, 0.4);
+            }
+            100% {
+                text-shadow:
+                    2px 2px 4px rgba(201, 24, 74, 0.3),
+                    0 0 60px rgba(255, 77, 109, 0.7),
+                    0 0 80px rgba(255, 77, 109, 0.5);
+            }
+        }
+
+        .message {
+            font-size: 1.5rem;
+            color: #ff758f;
+            font-style: italic;
+            margin-top: 20px;
+            animation: fade-in 2s ease-out;
+        }
+
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        .sparkle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 30%; right: 15%; animation-delay: 0.3s; }
+        .sparkle:nth-child(3) { top: 60%; left: 20%; animation-delay: 0.6s; }
+        .sparkle:nth-child(4) { top: 70%; right: 25%; animation-delay: 0.9s; }
+        .sparkle:nth-child(5) { top: 40%; left: 5%; animation-delay: 1.2s; }
+
+        @keyframes sparkle {
+            0%, 100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .love-text {
+            position: absolute;
+            font-size: 1rem;
+            color: #ff8fa3;
+            opacity: 0.7;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .love-text:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .love-text:nth-child(2) { top: 15%; right: 10%; animation-delay: 0.5s; }
+        .love-text:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 1s; }
+        .love-text:nth-child(4) { bottom: 15%; right: 12%; animation-delay: 1.5s; }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .xoxo {
+            margin-top: 30px;
+            font-size: 2rem;
+            color: #ff4d6d;
+            letter-spacing: 15px;
+            animation: xoxo-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes xoxo-pulse {
+            0%, 100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Sparkles -->
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+
+    <!-- Love text decorations -->
+    <div class="love-text">♥ love ♥</div>
+    <div class="love-text">✨ forever ✨</div>
+    <div class="love-text">💕 always 💕</div>
+    <div class="love-text">♥ xoxo ♥</div>
+
+    <div class="container">
+        <div class="heart-container">
+            <div class="glow"></div>
+            <div class="heart"></div>
+        </div>
+
+        <h1 class="name">KATE</h1>
+
+        <p class="message">You have my heart forever</p>
+
+        <p class="xoxo">XOXO</p>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const hearts = ['❤️', '💕', '💗', '💖', '💝', '♥'];
+
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+                heart.style.animationDelay = Math.random() * 8 + 's';
+                heart.style.fontSize = (15 + Math.random() * 20) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        createFloatingHearts();
+
+        // Add click effect - burst of hearts
+        document.addEventListener('click', function(e) {
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = e.clientX + 'px';
+                heart.style.top = e.clientY + 'px';
+                heart.style.fontSize = '20px';
+                heart.style.pointerEvents = 'none';
+                heart.style.zIndex = '1000';
+                heart.style.transition = 'all 1s ease-out';
+                document.body.appendChild(heart);
+
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 80 + Math.random() * 40;
+
+                setTimeout(() => {
+                    heart.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
+                    heart.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
