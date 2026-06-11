@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 Survivor Pool</title>
+<style>
+  :root{
+    --bg:#0a0f1c;
+    --bg2:#0e1626;
+    --panel:#141d30;
+    --panel2:#1b2740;
+    --line:#22304d;
+    --txt:#e8eefc;
+    --muted:#8da2c7;
+    --green:#16d97f;
+    --green-d:#0fae64;
+    --red:#ff5d6c;
+    --amber:#ffc24b;
+    --blue:#5aa9ff;
+    --accent:#16d97f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:radial-gradient(1200px 600px at 70% -10%, #16243f 0%, var(--bg) 55%);
+    color:var(--txt);min-height:100vh;
+  }
+  a{color:var(--green);text-decoration:none;}
+  /* Top bar */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,15,28,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 20px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.15rem;}
+  .brand .ball{font-size:1.5rem;}
+  .brand small{display:block;font-weight:500;color:var(--muted);font-size:.72rem;letter-spacing:.5px;}
+  .nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto;}
+  .nav button{
+    background:transparent;border:1px solid transparent;color:var(--muted);
+    padding:8px 13px;border-radius:9px;cursor:pointer;font-size:.86rem;font-weight:600;transition:.15s;
+  }
+  .nav button:hover{color:var(--txt);background:var(--panel);}
+  .nav button.active{color:#05221a;background:var(--green);}
+  /* status strip */
+  .statusstrip{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:.82rem;color:var(--muted);}
+  .statusstrip b{color:var(--txt);}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;}
+  .dot.live{background:var(--green);box-shadow:0 0 0 0 rgba(22,217,127,.6);animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,217,127,.5)}70%{box-shadow:0 0 0 8px rgba(22,217,127,0)}100%{box-shadow:0 0 0 0 rgba(22,217,127,0)}}
+  /* layout */
+  .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 80px;}
+  h1.page{font-size:1.7rem;margin-bottom:4px;}
+  .sub{color:var(--muted);margin-bottom:22px;font-size:.95rem;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:20px;}
+  .panel h2{font-size:1.15rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .grid{display:grid;gap:16px;}
+  .cols-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+  .cols-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+  .cols-4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
+  /* stat cards */
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;}
+  .stat .num{font-size:1.9rem;font-weight:800;}
+  .stat .lbl{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.6px;}
+  .stat.green .num{color:var(--green);}
+  .stat.red .num{color:var(--red);}
+  .stat.amber .num{color:var(--amber);}
+  .stat.blue .num{color:var(--blue);}
+  /* badges */
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:.74rem;font-weight:700;}
+  .badge.alive{background:rgba(22,217,127,.15);color:var(--green);}
+  .badge.out{background:rgba(255,93,108,.15);color:var(--red);}
+  .badge.win{background:rgba(255,194,75,.18);color:var(--amber);}
+  .badge.neutral{background:var(--panel2);color:var(--muted);}
+  .badge.open{background:rgba(90,169,255,.15);color:var(--blue);}
+  .badge.locked{background:rgba(255,194,75,.15);color:var(--amber);}
+  .badge.resolved{background:rgba(22,217,127,.15);color:var(--green);}
+  .badge.upcoming{background:var(--panel2);color:var(--muted);}
+  /* team chips / pick buttons */
+  .group{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .group h3{font-size:.95rem;margin-bottom:10px;color:var(--muted);letter-spacing:.5px;}
+  .teamopt{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+    background:var(--panel);border:1.5px solid var(--line);color:var(--txt);
+    padding:9px 12px;border-radius:10px;cursor:pointer;margin-bottom:8px;font-size:.92rem;transition:.12s;
+  }
+  .teamopt:hover:not(:disabled){border-color:var(--green);}
+  .teamopt .flag{font-size:1.25rem;}
+  .teamopt .nm{flex:1;font-weight:600;}
+  .teamopt.sel{border-color:var(--green);background:rgba(22,217,127,.12);}
+  .teamopt.sel .check{color:var(--green);font-weight:800;}
+  .teamopt:disabled{opacity:.4;cursor:not-allowed;}
+  .teamopt.used{opacity:.45;cursor:not-allowed;text-decoration:line-through;}
+  .teamopt .str{font-size:.7rem;color:var(--amber);letter-spacing:1px;}
+  /* buttons */
+  .btn{background:var(--green);color:#05221a;border:none;padding:11px 20px;border-radius:11px;font-weight:800;cursor:pointer;font-size:.92rem;transition:.15s;}
+  .btn:hover{background:var(--green-d);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--txt);}
+  .btn.ghost:hover{border-color:var(--green);background:var(--panel2);}
+  .btn.danger{background:transparent;border:1.5px solid var(--red);color:var(--red);}
+  .btn.danger:hover{background:rgba(255,93,108,.12);}
+  .btn.sm{padding:7px 13px;font-size:.8rem;border-radius:9px;}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:.88rem;}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.6px;font-weight:700;}
+  tr:hover td{background:var(--panel2);}
+  td.center,th.center{text-align:center;}
+  .you-row td{background:rgba(22,217,127,.07);}
+  .tablewrap{overflow-x:auto;}
+  /* percentage bar */
+  .pctrow{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+  .pctrow .lab{display:flex;align-items:center;gap:8px;min-width:170px;font-weight:600;font-size:.9rem;}
+  .pctbar{flex:1;height:18px;background:var(--panel2);border-radius:9px;overflow:hidden;border:1px solid var(--line);}
+  .pctbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--green-d),var(--green));}
+  .pctrow .val{min-width:70px;text-align:right;color:var(--muted);font-size:.82rem;}
+  /* misc */
+  .pill{background:var(--panel2);border:1px solid var(--line);padding:6px 11px;border-radius:999px;font-size:.82rem;display:inline-flex;align-items:center;gap:6px;margin:0 6px 6px 0;}
+  .pill .flag{font-size:1.05rem;}
+  .pill.used{opacity:.55;text-decoration:line-through;}
+  .notice{padding:12px 15px;border-radius:11px;font-size:.88rem;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;}
+  .notice.info{background:rgba(90,169,255,.1);border:1px solid rgba(90,169,255,.3);}
+  .notice.warn{background:rgba(255,194,75,.1);border:1px solid rgba(255,194,75,.3);}
+  .notice.ok{background:rgba(22,217,127,.1);border:1px solid rgba(22,217,127,.3);}
+  .notice.bad{background:rgba(255,93,108,.1);border:1px solid rgba(255,93,108,.3);}
+  .muted{color:var(--muted);}
+  .right{margin-left:auto;}
+  .flexrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .ruleslist{list-style:none;}
+  .ruleslist li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;}
+  .ruleslist li:before{content:"✓";color:var(--green);font-weight:800;}
+  .ruleslist li.no:before{content:"✕";color:var(--red);}
+  .step{display:flex;gap:14px;margin-bottom:16px;}
+  .step .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--green);color:#05221a;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .step .body h4{margin-bottom:3px;}
+  .step .body p{color:var(--muted);font-size:.9rem;line-height:1.5;}
+  .roundnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .roundnav button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.85rem;}
+  .roundnav button.active{background:var(--green);color:#05221a;border-color:var(--green);}
+  .roundnav button:disabled{opacity:.4;cursor:not-allowed;}
+  .commish{border:1px dashed var(--amber);background:rgba(255,194,75,.06);}
+  .commish h2{color:var(--amber);}
+  details summary{cursor:pointer;font-weight:700;color:var(--amber);}
+  .footer{text-align:center;color:var(--muted);font-size:.8rem;padding:30px 0;}
+  .tag{font-size:.7rem;color:var(--muted);}
+  .yourpick{font-weight:700;color:var(--green);}
+  .selbar{position:sticky;bottom:0;background:rgba(10,15,28,.92);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="ball">⚽</span><div>World Cup 2026 Survivor<small>POWERED BY PASHA · SPLASH-STYLE SURVIVOR</small></div></div>
+    <div class="nav" id="nav"></div>
+  </div>
+  <div class="statusstrip" id="statusstrip"></div>
+</div>
+<div class="wrap"><div id="app"></div>
+  <div class="footer">
+    Demo contest · client-side only · all data stored in your browser ·
+    <a href="games.html">← Back to Games & Tools</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   WORLD CUP 2026 SURVIVOR POOL  —  Splash Sports style format
+   Single-file client app. Persists to localStorage.
+   ============================================================ */
+
+/* ---------- Team & group data (48 teams, 12 groups) ---------- */
+// strength 1-5 used for realistic bot picks & result simulation weighting
+const GROUPS = {
+  A:[["MEX","Mexico","🇲🇽",4],["CRO","Croatia","🇭🇷",4],["KSA","Saudi Arabia","🇸🇦",2],["HAI","Haiti","🇭🇹",1]],
+  B:[["CAN","Canada","🇨🇦",3],["NOR","Norway","🇳🇴",4],["CIV","Ivory Coast","🇨🇮",3],["UZB","Uzbekistan","🇺🇿",2]],
+  C:[["USA","United States","🇺🇸",4],["WAL","Wales","🏴󠁧󠁢󠁷󠁬󠁳󠁿",3],["EGY","Egypt","🇪🇬",3],["JOR","Jordan","🇯🇴",2]],
+  D:[["ARG","Argentina","🇦🇷",5],["AUS","Australia","🇦🇺",3],["NGA","Nigeria","🇳🇬",3],["PAN","Panama","🇵🇦",2]],
+  E:[["FRA","France","🇫🇷",5],["SUI","Switzerland","🇨🇭",4],["KOR","South Korea","🇰🇷",3],["NZL","New Zealand","🇳🇿",1]],
+  F:[["BRA","Brazil","🇧🇷",5],["JPN","Japan","🇯🇵",4],["SEN","Senegal","🇸🇳",3],["CRC","Costa Rica","🇨🇷",2]],
+  G:[["ENG","England","🏴󠁧󠁢󠁥󠁮󠁧󠁿",5],["DEN","Denmark","🇩🇰",4],["CMR","Cameroon","🇨🇲",3],["QAT","Qatar","🇶🇦",2]],
+  H:[["ESP","Spain","🇪🇸",5],["URU","Uruguay","🇺🇾",4],["GHA","Ghana","🇬🇭",3],["IRN","Iran","🇮🇷",2]],
+  I:[["POR","Portugal","🇵🇹",5],["COL","Colombia","🇨🇴",4],["ALG","Algeria","🇩🇿",3],["CUW","Curaçao","🇨🇼",1]],
+  J:[["NED","Netherlands","🇳🇱",5],["AUT","Austria","🇦🇹",3],["TUN","Tunisia","🇹🇳",2],["PAR","Paraguay","🇵🇾",3]],
+  K:[["GER","Germany","🇩🇪",5],["ECU","Ecuador","🇪🇨",3],["RSA","South Africa","🇿🇦",2],["SCO","Scotland","🏴󠁧󠁢󠁳󠁣󠁴󠁿",3]],
+  L:[["BEL","Belgium","🇧🇪",4],["POL","Poland","🇵🇱",3],["CPV","Cape Verde","🇨🇻",2],["HON","Honduras","🇭🇳",1]],
+};
+// Build team lookup
+const TEAMS = {};
+const GROUP_OF = {};
+Object.keys(GROUPS).forEach(g=>{
+  GROUPS[g].forEach(([id,name,flag,str])=>{
+    TEAMS[id]={id,name,flag,strength:str,group:g};
+    GROUP_OF[id]=g;
+  });
+});
+const ALL_TEAM_IDS = Object.keys(TEAMS);
+
+/* ---------- Round definitions ---------- */
+const ROUNDS = [
+  {key:"GROUP", name:"Group Stage", pickName:"Group Stage Picks", advanceTo:"Round of 32", advCount:32, pickCount:4, deadline:"Locks before the opening match · Thu Jun 11, 2026"},
+  {key:"R32",   name:"Round of 32", pickName:"Round of 32",       advanceTo:"Round of 16", advCount:16, pickCount:1, deadline:"Locks before the first Round of 32 match · Sat Jun 27, 2026"},
+  {key:"R16",   name:"Round of 16", pickName:"Round of 16",       advanceTo:"Quarterfinals",advCount:8, pickCount:1, deadline:"Locks before the first Round of 16 match · Sat Jul 4, 2026"},
+  {key:"QF",    name:"Quarterfinals",name2:"Quarterfinals",advanceTo:"Semifinals",  advCount:4,  pickCount:1, deadline:"Locks before the first Quarterfinal · Thu Jul 9, 2026"},
+  {key:"SF",    name:"Semifinals", advanceTo:"Final",       advCount:2,  pickCount:1, deadline:"Locks before the first Semifinal · Tue Jul 14, 2026"},
+  {key:"FINAL", name:"Final",      advanceTo:"Champion",    advCount:1,  pickCount:1, deadline:"Locks before the Final · Sun Jul 19, 2026"},
+];
+const ROUND_KEYS = ROUNDS.map(r=>r.key);
+const KO_ROUNDS = ["R32","R16","QF","SF","FINAL"];
+const roundDef = k => ROUNDS.find(r=>r.key===k);
+const roundIndex = k => ROUND_KEYS.indexOf(k);
+
+/* ---------- State / persistence ---------- */
+const LS_KEY = "wc26_survivor_v1";
+let S = null;
+
+function defaultState(){
+  return {
+    contestName:"WC 2026 Survivor — Pasha Office Pool",
+    prizePool:"$5,000",
+    tiebreaker:"Co-winners declared if multiple entries survive the Final.",
+    phase:{ // lifecycle per round: upcoming -> open -> locked -> resolved
+      GROUP:"open", R32:"upcoming", R16:"upcoming", QF:"upcoming", SF:"upcoming", FINAL:"upcoming"
+    },
+    results:{ GROUP:null, R32:null, R16:null, QF:null, SF:null, FINAL:null }, // arrays of advancing team ids
+    entries:[],
+    seeded:false
+  };
+}
+
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+function load(){
+  try{ const raw=localStorage.getItem(LS_KEY); if(raw){ S=JSON.parse(raw); } }catch(e){ S=null; }
+  if(!S){ S=defaultState(); }
+  if(!S.seeded){ seedEntries(); S.seeded=true; save(); }
+}
+
+/* ---------- Seed opponent entries (bots) + the user ---------- */
+const BOT_NAMES = ["Goal Machine","Pitch Perfect","Net Ninjas","The Equalizers","Offside Trap","Corner Kings",
+"Hat Trick Heroes","Group of Death","Total Football","Tiki Taka","Catenaccio FC","Golden Boot",
+"Extra Time","Penalty Box","Stoppage Time","The Underdogs","Bracket Busters","Last Man Standing",
+"Survivor Sam","Knockout Kelly","Clean Sheet","Counter Attack","The Volley","Box to Box","False Nine",
+"Park the Bus","Wing Wizards","Midfield Maestro","Set Piece","The Treble","VAR Check","Top Bins",
+"Nutmeg Nation","Long Ball","High Press","The Sweepers","Bicycle Kick","The Magpies","Trophy Hunters",
+"Stadium Roar","Pitch Invaders","The Comeback","Group Stage Gus","Round of 32 Rob","Dark Horse Diego"];
+
+function weightedPick(ids, weightFn){
+  const total = ids.reduce((s,id)=>s+weightFn(id),0);
+  let r = Math.random()*total;
+  for(const id of ids){ r-=weightFn(id); if(r<=0) return id; }
+  return ids[ids.length-1];
+}
+function weightedSample(ids,k,weightFn){
+  const pool=[...ids], out=[];
+  for(let i=0;i<k && pool.length;i++){
+    const pick=weightedPick(pool,weightFn);
+    out.push(pick); pool.splice(pool.indexOf(pick),1);
+  }
+  return out;
+}
+
+function seedEntries(){
+  S.entries=[];
+  // The user's own entry first
+  S.entries.push({ id:"you", name:"You", isUser:true, group:[], picks:{}, joined:Date.now() });
+  // Bots
+  const n = 42;
+  const names=[...BOT_NAMES].sort(()=>Math.random()-0.5).slice(0,n);
+  names.forEach((nm,i)=>{
+    // bot group picks: 4 unique teams, weighted by strength
+    const g = weightedSample(ALL_TEAM_IDS,4,id=>TEAMS[id].strength**2);
+    S.entries.push({ id:"bot"+i, name:nm, isUser:false, group:g, picks:{}, joined:Date.now() });
+  });
+}
+
+/* ---------- Helpers on entries ---------- */
+function userEntry(){ return S.entries.find(e=>e.isUser); }
+function usedTeams(entry){
+  const set=new Set(entry.group||[]);
+  KO_ROUNDS.forEach(k=>{ if(entry.picks[k]) set.add(entry.picks[k]); });
+  return set;
+}
+// participants of a round (the teams playing that round)
+function participants(roundKey){
+  if(roundKey==="GROUP") return ALL_TEAM_IDS;
+  const prev = ROUND_KEYS[roundIndex(roundKey)-1];
+  return S.results[prev] || []; // teams that advanced from previous round
+}
+
+// Determine elimination: returns {eliminated:roundKey|null}
+function evalEntry(entry){
+  // GROUP: must have 4 picks all advancing
+  if(S.results.GROUP){
+    const adv=new Set(S.results.GROUP);
+    if((entry.group||[]).length<4) return {eliminated:"GROUP", reason:"Did not submit 4 group picks"};
+    const failed=entry.group.filter(t=>!adv.has(t));
+    if(failed.length) return {eliminated:"GROUP", reason:failed.map(t=>TEAMS[t].name).join(", ")+" did not advance"};
+  } else {
+    return {eliminated:null}; // group not resolved yet -> everyone alive
+  }
+  // Knockout rounds
+  for(const k of KO_ROUNDS){
+    if(!S.results[k]) break; // not resolved yet -> alive up to here
+    const pick=entry.picks[k];
+    if(!pick) return {eliminated:k, reason:"No pick submitted for "+roundDef(k).name};
+    if(!S.results[k].includes(pick)) return {eliminated:k, reason:TEAMS[pick].name+" did not advance"};
+  }
+  return {eliminated:null};
+}
+function entryStatus(entry){
+  const ev=evalEntry(entry);
+  return {...ev, alive: ev.eliminated===null};
+}
+// is entry alive *entering* a given round (i.e. survived all earlier resolved rounds)
+function aliveEntering(entry, roundKey){
+  const ev=evalEntry(entry);
+  if(ev.eliminated===null) return true;
+  return roundIndex(ev.eliminated) >= roundIndex(roundKey);
+}
+
+/* ---------- Result simulation (commissioner) ---------- */
+function simulateGroup(){
+  const adv=[];
+  Object.keys(GROUPS).forEach(g=>{
+    const ids=GROUPS[g].map(t=>t[0]);
+    const top2=weightedSample(ids,2,id=>TEAMS[id].strength**2);
+    adv.push(...top2);
+  });
+  // best 8 third-placed from the remaining 24
+  const remaining=ALL_TEAM_IDS.filter(id=>!adv.includes(id));
+  const thirds=weightedSample(remaining,8,id=>TEAMS[id].strength**2);
+  adv.push(...thirds);
+  S.results.GROUP=adv;
+}
+function simulateKO(roundKey){
+  const parts=participants(roundKey);
+  const advCount=roundDef(roundKey).advCount;
+  S.results[roundKey]=weightedSample(parts,advCount,id=>TEAMS[id].strength**1.5);
+}
+// bots auto-pick for a KO round when it opens
+function botsPick(roundKey){
+  const parts=participants(roundKey);
+  S.entries.forEach(e=>{
+    if(e.isUser) return;
+    if(!aliveEntering(e,roundKey)) return;       // eliminated bots don't pick
+    if(e.picks[roundKey]) return;                 // already picked
+    const used=usedTeams(e);
+    const avail=parts.filter(t=>!used.has(t));
+    if(avail.length){
+      e.picks[roundKey]=weightedPick(avail,id=>TEAMS[id].strength**2);
+    }
+  });
+}
+
+/* ---------- Pick percentages ---------- */
+// Among entries alive entering the round and that submitted a pick
+function pickPercentages(roundKey){
+  const counts={}; let total=0;
+  S.entries.forEach(e=>{
+    if(!aliveEntering(e,roundKey)) return;
+    if(roundKey==="GROUP"){
+      (e.group||[]).forEach(t=>{ counts[t]=(counts[t]||0)+1; });
+      if((e.group||[]).length) total++;
+    } else {
+      const p=e.picks[roundKey];
+      if(p){ counts[p]=(counts[p]||0)+1; total++; }
+    }
+  });
+  return {counts,total};
+}
+
+/* ---------- Routing ---------- */
+let PAGE="overview";
+let KO_VIEW="R32"; // which knockout round shown on knockout page
+const PAGES=[
+  ["overview","Overview"],["rules","Rules"],["group","Group Picks"],
+  ["knockout","Knockout Picks"],["standings","Standings"],
+  ["history","Pick History"],["tracker","Entry Tracker"]
+];
+
+function go(p){ PAGE=p; window.scrollTo(0,0); render(); }
+
+/* ---------- Rendering ---------- */
+function render(){
+  renderNav();
+  renderStatusStrip();
+  const el=document.getElementById("app");
+  el.innerHTML = ({
+    overview:pageOverview, rules:pageRules, group:pageGroup, knockout:pageKnockout,
+    standings:pageStandings, history:pageHistory, tracker:pageTracker
+  }[PAGE])();
+}
+
+function renderNav(){
+  document.getElementById("nav").innerHTML=PAGES.map(([k,n])=>
+    `<button class="${PAGE===k?'active':''}" onclick="go('${k}')">${n}</button>`).join("");
+}
+
+function currentRound(){
+  // first round not yet resolved
+  for(const k of ROUND_KEYS){ if(S.phase[k]!=="resolved") return k; }
+  return "FINAL";
+}
+function renderStatusStrip(){
+  const alive=S.entries.filter(e=>entryStatus(e).alive).length;
+  const cr=currentRound();
+  const ph=S.phase[cr];
+  const phaseLbl={open:"Picks Open",locked:"Picks Locked",resolved:"Resolved",upcoming:"Upcoming"}[ph];
+  document.getElementById("statusstrip").innerHTML=
+    `<span><span class="dot live"></span><b>${roundDef(cr).name}</b> · ${phaseLbl}</span>
+     <span>Entries: <b>${S.entries.length}</b></span>
+     <span>Alive: <b style="color:var(--green)">${alive}</b></span>
+     <span>Eliminated: <b style="color:var(--red)">${S.entries.length-alive}</b></span>
+     <span class="right">${roundDef(cr).deadline||""}</span>`;
+}
+
+/* ---------- Commissioner controls (shared partial) ---------- */
+function commishPanel(){
+  const rows=ROUNDS.map(r=>{
+    const k=r.key, ph=S.phase[k];
+    const canOpen = (k==="GROUP") || S.phase[ROUND_KEYS[roundIndex(k)-1]]==="resolved";
+    return `<tr>
+      <td><b>${r.name}</b></td>
+      <td><span class="badge ${ph}">${ph}</span></td>
+      <td class="center">
+        <button class="btn sm ghost" ${ph==='open'||ph==='locked'||ph==='resolved'||!canOpen?'disabled':''} onclick="cmdOpen('${k}')">Open Picks</button>
+        <button class="btn sm ghost" ${ph!=='open'?'disabled':''} onclick="cmdLock('${k}')">Lock Picks</button>
+        <button class="btn sm" ${ph!=='locked'?'disabled':''} onclick="cmdResolve('${k}')">Resolve Results</button>
+      </td>
+    </tr>`;
+  }).join("");
+  return `<details class="panel commish"><summary>🛠️ Commissioner / Demo Controls (step through the tournament)</summary>
+    <p class="muted" style="margin:12px 0">Use these to simulate the real contest: open a round for picks, lock it (picks become public &amp; percentages appear), then resolve results (random, weighted by team strength) to advance teams and eliminate entries. This stands in for live match results.</p>
+    <div class="tablewrap"><table>
+      <tr><th>Round</th><th>Status</th><th class="center">Actions</th></tr>${rows}
+    </table></div>
+    <div class="flexrow" style="margin-top:14px">
+      <button class="btn ghost sm" onclick="cmdAutoFinish()">⚡ Auto-simulate to the end</button>
+      <button class="btn danger sm" onclick="cmdReset()">↺ Reset entire contest</button>
+    </div>
+  </details>`;
+}
+function cmdOpen(k){
+  S.phase[k]="open";
+  if(k!=="GROUP") botsPick(k); // bots make their picks for this KO round
+  save(); render();
+}
+function cmdLock(k){
+  S.phase[k]="locked";
+  if(k!=="GROUP") botsPick(k); // ensure any stragglers pick before lock
+  save(); render();
+}
+function cmdResolve(k){
+  if(k==="GROUP") simulateGroup(); else simulateKO(k);
+  S.phase[k]="resolved";
+  // auto-open next round for convenience
+  const ni=roundIndex(k)+1;
+  if(ni<ROUND_KEYS.length){ const nk=ROUND_KEYS[ni]; if(S.phase[nk]==="upcoming"){ S.phase[nk]="open"; if(nk!=="GROUP") botsPick(nk);} }
+  save(); render();
+}
+function cmdAutoFinish(){
+  for(const k of ROUND_KEYS){
+    if(S.phase[k]==="upcoming"){ S.phase[k]="open"; if(k!=="GROUP") botsPick(k); }
+    if(S.phase[k]==="open"){ if(k!=="GROUP") botsPick(k); S.phase[k]="locked"; }
+    if(S.phase[k]==="locked"){ if(k==="GROUP") simulateGroup(); else simulateKO(k); S.phase[k]="resolved"; }
+  }
+  save(); render();
+}
+function cmdReset(){
+  if(confirm("Reset the entire contest? This clears your picks and re-seeds all opponent entries.")){
+    S=defaultState(); seedEntries(); S.seeded=true; save(); PAGE="overview"; render();
+  }
+}
+
+/* ============================================================
+   PAGE 1 — OVERVIEW
+   ============================================================ */
+function pageOverview(){
+  const alive=S.entries.filter(e=>entryStatus(e).alive).length;
+  const cr=currentRound();
+  const you=userEntry(); const ys=entryStatus(you);
+  const champ = S.results.FINAL && S.results.FINAL.length===1 ? S.results.FINAL[0] : null;
+  let winnerBanner="";
+  if(S.phase.FINAL==="resolved"){
+    const survivors=S.entries.filter(e=>entryStatus(e).alive);
+    if(survivors.length){
+      winnerBanner=`<div class="notice ok"><span>🏆</span><div><b>Contest complete!</b> ${survivors.length===1?
+        `<b>${survivors[0].name}</b> is the sole survivor and wins ${S.prizePool}.`:
+        `${survivors.length} entries survived the Final — <b>co-winners</b>: ${survivors.map(s=>s.name).join(", ")}. ${S.tiebreaker}`}</div></div>`;
+    } else {
+      winnerBanner=`<div class="notice warn"><span>🤷</span><div>No entry survived the Final. Per house rules, the last entries eliminated split the pool.</div></div>`;
+    }
+  }
+  return `
+  <h1 class="page">${S.contestName}</h1>
+  <p class="sub">A Splash-style elimination survivor pool for the FIFA World Cup 2026 · 48 teams · 12 groups</p>
+  ${winnerBanner}
+  <div class="grid cols-4" style="margin-bottom:20px">
+    <div class="stat blue"><div class="num">${S.entries.length}</div><div class="lbl">Total Entries</div></div>
+    <div class="stat green"><div class="num">${alive}</div><div class="lbl">Still Alive</div></div>
+    <div class="stat red"><div class="num">${S.entries.length-alive}</div><div class="lbl">Eliminated</div></div>
+    <div class="stat amber"><div class="num">${S.prizePool}</div><div class="lbl">Prize Pool</div></div>
+  </div>
+
+  <div class="grid cols-2">
+    <div class="panel">
+      <h2>📋 How it works</h2>
+      <div class="step"><div class="n">1</div><div class="body"><h4>Group Stage</h4><p>Before kickoff, pick <b>exactly 4 teams</b> you think will advance to the Round of 32. If <b>any</b> of them fail to advance, you're out.</p></div></div>
+      <div class="step"><div class="n">2</div><div class="body"><h4>Knockout Stage</h4><p>Survive and pick <b>1 team per round</b> (R32 → R16 → QF → SF → Final). Your team must win — regulation, extra time, or penalties all count.</p></div></div>
+      <div class="step"><div class="n">3</div><div class="body"><h4>One &amp; done</h4><p>Every team can be used <b>only once</b> across the whole contest, group picks included. One wrong pick eliminates you instantly.</p></div></div>
+      <div class="step"><div class="n">4</div><div class="body"><h4>Last entry standing wins</h4><p>The final surviving entry takes the pool. Multiple survivors after the Final become co-winners.</p></div></div>
+    </div>
+    <div class="panel">
+      <h2>🎯 Your entry</h2>
+      <div class="flexrow" style="margin-bottom:14px">
+        <span class="badge ${ys.alive?'alive':'out'}">${ys.alive?'● ALIVE':'✕ ELIMINATED — '+roundDef(ys.eliminated).name}</span>
+      </div>
+      <p class="muted" style="margin-bottom:6px">Group Stage picks (${(you.group||[]).length}/4):</p>
+      <div style="margin-bottom:14px">${(you.group||[]).length? you.group.map(t=>teamPill(t)).join(""):'<span class="muted">No group picks yet.</span>'}</div>
+      <p class="muted" style="margin-bottom:6px">Knockout picks:</p>
+      <div style="margin-bottom:16px">${KO_ROUNDS.some(k=>you.picks[k])? KO_ROUNDS.filter(k=>you.picks[k]).map(k=>`<span class="pill"><span class="tag">${roundDef(k).name}:</span> ${TEAMS[you.picks[k]].flag} ${TEAMS[you.picks[k]].name}</span>`).join(""):'<span class="muted">No knockout picks yet.</span>'}</div>
+      <button class="btn" onclick="go('${(you.group||[]).length<4?'group':'knockout'}')">${(you.group||[]).length<4?'Make Group Picks →':'Make Knockout Picks →'}</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>🗓️ Contest timeline</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Round</th><th>Pick</th><th>Status</th><th>Deadline</th><th class="center">Result</th></tr>
+      ${ROUNDS.map(r=>{
+        const ph=S.phase[r.key];
+        const res = S.results[r.key];
+        const resTxt = r.key==="GROUP" ? (res?`${res.length} teams advanced`:"—")
+                     : (res? (r.key==="FINAL"? `🏆 ${TEAMS[res[0]].flag} ${TEAMS[res[0]].name}` : `${res.length} advanced`):"—");
+        return `<tr>
+          <td><b>${r.name}</b></td>
+          <td>${r.pickCount} team${r.pickCount>1?'s':''} → ${r.advanceTo}</td>
+          <td><span class="badge ${ph}">${ph}</span></td>
+          <td class="muted" style="font-size:.8rem">${(r.deadline||"").replace(/^.*· /,'')}</td>
+          <td class="center">${resTxt}</td>
+        </tr>`;
+      }).join("")}
+    </table></div>
+  </div>
+  ${commishPanel()}
+  `;
+}
+
+function teamPill(t,used){ const T=TEAMS[t]; return `<span class="pill ${used?'used':''}"><span class="flag">${T.flag}</span>${T.name}</span>`; }
+
+/* ============================================================
+   PAGE 2 — RULES
+   ============================================================ */
+function pageRules(){
+  return `
+  <h1 class="page">Rules</h1>
+  <p class="sub">The exact Splash-style World Cup Survivor format.</p>
+  <div class="grid cols-2">
+    <div class="panel">
+      <h2>Phase 1 — Group Stage</h2>
+      <ul class="ruleslist">
+        <li>Select <b>exactly 4 teams</b> to advance from the Group Stage to the Round of 32.</li>
+        <li>All 4 teams must be <b>unique</b> — a team can only be selected once.</li>
+        <li><b>All 4</b> selected teams must advance to the Round of 32.</li>
+        <li class="no">If any selected team fails to advance, the entry is <b>eliminated</b>.</li>
+        <li class="no">Teams used in the Group Stage <b>cannot be used again</b> later in the contest.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Phase 2 — Knockout Stage</h2>
+      <p class="muted" style="margin-bottom:10px">Surviving entries pick <b>1 team per round</b>:</p>
+      <ul class="ruleslist">
+        <li>Round of 32 — pick 1 team to advance.</li>
+        <li>Round of 16 — pick 1 team to advance.</li>
+        <li>Quarterfinals — pick 1 team to advance.</li>
+        <li>Semifinals — pick 1 team to advance.</li>
+        <li>Final — pick 1 team to win.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>What counts as a win</h2>
+      <ul class="ruleslist">
+        <li>Regulation wins count.</li>
+        <li>Extra time wins count.</li>
+        <li>Penalty shootout wins count.</li>
+        <li>Each team may only be used <b>once during the entire contest</b>, including Group Stage selections.</li>
+        <li class="no">Any incorrect pick <b>immediately eliminates</b> the entry.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Deadlines &amp; visibility</h2>
+      <ul class="ruleslist">
+        <li>Group Stage picks lock <b>before the opening match</b> of the World Cup.</li>
+        <li>Knockout picks lock <b>before the first match</b> of each knockout round.</li>
+        <li><b>Before lock:</b> you only see your own picks.</li>
+        <li><b>After lock:</b> all picks become visible, pick percentages are shown, and surviving &amp; eliminated entries are displayed.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>Winner</h2>
+      <p class="muted" style="line-height:1.7">The <b>last surviving entry</b> wins the contest. If multiple entries survive through the Final, the pool declares <b>co-winners</b> (or applies a pre-configured tiebreaker).</p>
+      <p style="margin-top:10px"><span class="badge neutral">Tiebreaker</span> ${S.tiebreaker}</p>
+    </div>
+    <div class="panel">
+      <h2>Eliminated entries stay visible</h2>
+      <p class="muted" style="line-height:1.7">Once an entry is out, it remains visible on the Standings and Entry Tracker pages with the exact round in which it was eliminated — so everyone can follow the full survival history of the pool.</p>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   PAGE 3 — GROUP STAGE PICKS
+   ============================================================ */
+let DRAFT_GROUP=null; // working selection while picking
+function pageGroup(){
+  const you=userEntry();
+  const ph=S.phase.GROUP;
+  const locked = ph!=="open";
+  if(DRAFT_GROUP===null) DRAFT_GROUP=[...(you.group||[])];
+
+  // Header / notices
+  let head="";
+  if(ph==="open") head=`<div class="notice info"><span>🔓</span><div>Picks are <b>open</b>. Select exactly 4 teams to advance to the Round of 32. ${roundDef("GROUP").deadline}</div></div>`;
+  else if(ph==="locked") head=`<div class="notice warn"><span>🔒</span><div>Picks are <b>locked</b>. All entries' picks and pick percentages are now public. Awaiting Group Stage results.</div></div>`;
+  else if(ph==="resolved") head=`<div class="notice ok"><span>✅</span><div>Group Stage resolved — ${S.results.GROUP.length} teams advanced to the Round of 32.</div></div>`;
+
+  // Selection UI when open
+  let body="";
+  if(ph==="open"){
+    body = Object.keys(GROUPS).map(g=>{
+      const opts=GROUPS[g].map(([id])=>{
+        const sel=DRAFT_GROUP.includes(id);
+        const disabled = !sel && DRAFT_GROUP.length>=4;
+        return `<button class="teamopt ${sel?'sel':''}" ${disabled?'disabled':''} onclick="toggleGroup('${id}')">
+          <span class="flag">${TEAMS[id].flag}</span><span class="nm">${TEAMS[id].name}</span>
+          <span class="str">${"★".repeat(TEAMS[id].strength)}</span>
+          <span class="check">${sel?'✓':''}</span></button>`;
+      }).join("");
+      return `<div class="group"><h3>GROUP ${g}</h3>${opts}</div>`;
+    }).join("");
+    body=`<div class="grid cols-3">${body}</div>
+      <div class="selbar">
+        <b>Selected: <span style="color:var(--green)">${DRAFT_GROUP.length}</span> / 4</b>
+        <span class="muted">${DRAFT_GROUP.map(t=>TEAMS[t].flag+" "+TEAMS[t].name).join(" · ")||"none yet"}</span>
+        <span class="right"></span>
+        <button class="btn ghost sm" onclick="DRAFT_GROUP=[];render()">Clear</button>
+        <button class="btn" ${DRAFT_GROUP.length!==4?'disabled':''} onclick="saveGroup()">Lock in 4 picks</button>
+      </div>`;
+  } else {
+    // Locked/resolved: show percentages + everyone's picks
+    body = groupResultsBlock();
+  }
+
+  // Remaining / used summary
+  return `
+  <h1 class="page">Group Stage Picks</h1>
+  <p class="sub">Pick exactly 4 teams to advance from the group stage to the Round of 32.</p>
+  ${head}
+  ${ph==='open'? yourPicksRecap(you):''}
+  ${body}
+  `;
+}
+function yourPicksRecap(you){
+  if(!(you.group||[]).length) return "";
+  return `<div class="panel"><h2>Your current group picks</h2><div>${you.group.map(t=>teamPill(t)).join("")}</div></div>`;
+}
+function toggleGroup(id){
+  const i=DRAFT_GROUP.indexOf(id);
+  if(i>=0) DRAFT_GROUP.splice(i,1);
+  else if(DRAFT_GROUP.length<4) DRAFT_GROUP.push(id);
+  render();
+}
+function saveGroup(){
+  if(DRAFT_GROUP.length!==4) return;
+  userEntry().group=[...DRAFT_GROUP];
+  save(); render();
+  alert("Your 4 group-stage picks are saved! They'll lock before the opening match.");
+}
+function groupResultsBlock(){
+  const {counts,total}=pickPercentages("GROUP");
+  const resolved=S.phase.GROUP==="resolved";
+  const adv = resolved? new Set(S.results.GROUP):null;
+  // sorted by pick %
+  const ranked=ALL_TEAM_IDS.filter(t=>counts[t]).sort((a,b)=>counts[b]-counts[a]);
+  const bars=ranked.map(t=>{
+    const pct= total? Math.round(counts[t]/total*100):0;
+    const out = resolved && !adv.has(t);
+    return `<div class="pctrow">
+      <span class="lab">${TEAMS[t].flag} ${TEAMS[t].name} ${resolved?(adv.has(t)?'<span class="badge alive sm">ADV</span>':'<span class="badge out">OUT</span>'):''}</span>
+      <div class="pctbar"><i style="width:${pct}%;${out?'background:linear-gradient(90deg,#a33,#ff5d6c)':''}"></i></div>
+      <span class="val">${pct}% · ${counts[t]}</span>
+    </div>`;
+  }).join("");
+  return `<div class="panel"><h2>📊 Group Stage pick percentages <span class="tag">(${total} entries)</span></h2>${bars||'<p class="muted">No picks yet.</p>'}</div>
+    ${allEntriesGroupTable()}`;
+}
+function allEntriesGroupTable(){
+  const resolved=S.phase.GROUP==="resolved";
+  const adv=resolved? new Set(S.results.GROUP):null;
+  const rows=S.entries.map(e=>{
+    const cells=(e.group||[]).map(t=>{
+      const ok = !resolved? '' : (adv.has(t)? 'style="color:var(--green)"':'style="color:var(--red);text-decoration:line-through"');
+      return `<span ${ok}>${TEAMS[t].flag} ${TEAMS[t].name}</span>`;
+    }).join("<br>");
+    const st=entryStatus(e);
+    return `<tr class="${e.isUser?'you-row':''}">
+      <td><b>${e.name}</b>${e.isUser?' <span class="tag">(you)</span>':''}</td>
+      <td>${cells||'<span class="muted">—</span>'}</td>
+      <td>${resolved?`<span class="badge ${st.alive?'alive':'out'}">${st.alive?'ALIVE':'OUT'}</span>`:'<span class="badge locked">locked</span>'}</td>
+    </tr>`;
+  });
+  return `<div class="panel"><h2>🗂️ All entries — Group picks</h2><div class="tablewrap"><table>
+    <tr><th>Entry</th><th>4 Group Picks</th><th>Status</th></tr>${rows.join("")}</table></div></div>`;
+}
+
+/* ============================================================
+   PAGE 4 — KNOCKOUT PICKS
+   ============================================================ */
+let DRAFT_KO=null;
+function pageKnockout(){
+  const you=userEntry();
+  // round nav
+  const nav=KO_ROUNDS.map(k=>{
+    const ph=S.phase[k];
+    const disabled = ph==="upcoming";
+    return `<button class="${KO_VIEW===k?'active':''}" ${disabled?'disabled':''} onclick="koView('${k}')">${roundDef(k).name}${ph==='resolved'?' ✓':''}</button>`;
+  }).join("");
+
+  const k=KO_VIEW;
+  const ph=S.phase[k];
+  const def=roundDef(k);
+
+  // gate: must have survived group + previous rounds
+  const youAlive=aliveEntering(you,k);
+  const groupResolved=S.phase.GROUP==="resolved";
+
+  let head="";
+  if(ph==="upcoming") head=`<div class="notice info"><span>⏳</span><div>${def.name} hasn't opened yet. It opens once the previous round is resolved.</div></div>`;
+  else if(ph==="open") head=`<div class="notice info"><span>🔓</span><div>${def.name} picks are <b>open</b>. Pick 1 team to ${k==='FINAL'?'win the tournament':'advance to the '+def.advanceTo}. ${def.deadline}</div></div>`;
+  else if(ph==="locked") head=`<div class="notice warn"><span>🔒</span><div>Picks are <b>locked</b> — all picks &amp; percentages are public. Awaiting results.</div></div>`;
+  else if(ph==="resolved") head=`<div class="notice ok"><span>✅</span><div>${def.name} resolved.${k==='FINAL'&&S.results.FINAL?` Champion: <b>${TEAMS[S.results.FINAL[0]].flag} ${TEAMS[S.results.FINAL[0]].name}</b>`:` ${S.results[k].length} team(s) advanced.`}</div></div>`;
+
+  let body="";
+  if(ph==="upcoming"){
+    body="";
+  } else if(!groupResolved){
+    body=`<div class="notice warn"><span>ℹ️</span><div>Knockout picking becomes meaningful once the Group Stage is resolved. (Use Commissioner controls to advance the tournament.)</div></div>`;
+  } else if(!youAlive){
+    const st=entryStatus(you);
+    body=`<div class="notice bad"><span>✕</span><div>Your entry was eliminated in the <b>${roundDef(st.eliminated).name}</b> (${st.reason}). You can still watch the rest of the contest unfold below.</div></div>${ph!=="open"?koResultsBlock(k):''}`;
+  } else if(ph==="open"){
+    body=koPickUI(you,k);
+  } else {
+    body=koResultsBlock(k);
+  }
+
+  return `
+  <h1 class="page">Knockout Picks</h1>
+  <p class="sub">Survive the group stage, then pick one team per round. Each team can only be used once — ever.</p>
+  <div class="roundnav">${nav}</div>
+  ${head}
+  ${teamInventory(you)}
+  ${body}
+  `;
+}
+function koView(k){ KO_VIEW=k; DRAFT_KO=null; render(); }
+
+function teamInventory(you){
+  const used=usedTeams(you);
+  const usedArr=[...used];
+  return `<div class="panel"><h2>🎽 Your team inventory</h2>
+    <div class="grid cols-2">
+      <div>
+        <p class="muted" style="margin-bottom:8px">Used teams (${usedArr.length}) — can't be reused:</p>
+        <div>${usedArr.length? usedArr.map(t=>teamPill(t,true)).join(""):'<span class="muted">None used yet.</span>'}</div>
+      </div>
+      <div>
+        <p class="muted" style="margin-bottom:8px">Remaining teams available (${ALL_TEAM_IDS.length-usedArr.length}):</p>
+        <div class="muted" style="font-size:.85rem">${ALL_TEAM_IDS.length-usedArr.length} of 48 teams are still available to pick in future rounds.</div>
+      </div>
+    </div></div>`;
+}
+
+function koPickUI(you,k){
+  const parts=participants(k);
+  const used=usedTeams(you);
+  if(DRAFT_KO===null) DRAFT_KO=you.picks[k]||null;
+  // Show participating teams; mark used ones as unavailable
+  const opts=parts.map(t=>{
+    const isUsed=used.has(t) && you.picks[k]!==t;
+    const sel=DRAFT_KO===t;
+    return `<button class="teamopt ${sel?'sel':''} ${isUsed?'used':''}" ${isUsed?'disabled':''} onclick="pickKO('${t}')">
+      <span class="flag">${TEAMS[t].flag}</span><span class="nm">${TEAMS[t].name}</span>
+      <span class="tag">Grp ${GROUP_OF[t]||'-'}</span>
+      <span class="str">${"★".repeat(TEAMS[t].strength)}</span>
+      <span class="check">${sel?'✓':''}</span></button>`;
+  }).join("");
+  return `<div class="panel"><h2>Pick 1 team — ${roundDef(k).name} <span class="tag">(${parts.length} teams playing this round)</span></h2>
+    <p class="muted" style="margin-bottom:14px">Grayed-out teams are ones you've already used and can't pick again.</p>
+    <div class="grid cols-3">${opts}</div>
+    <div class="selbar">
+      <b>Your pick: <span style="color:var(--green)">${DRAFT_KO?TEAMS[DRAFT_KO].flag+' '+TEAMS[DRAFT_KO].name:'none'}</span></b>
+      <span class="right"></span>
+      <button class="btn" ${!DRAFT_KO?'disabled':''} onclick="saveKO('${k}')">Save pick</button>
+    </div></div>`;
+}
+function pickKO(t){ DRAFT_KO=t; render(); }
+function saveKO(k){
+  if(!DRAFT_KO) return;
+  userEntry().picks[k]=DRAFT_KO;
+  save(); DRAFT_KO=null; render();
+  alert("Pick saved for "+roundDef(k).name+"! It locks before the first match of the round.");
+}
+
+function koResultsBlock(k){
+  const {counts,total}=pickPercentages(k);
+  const resolved=S.phase[k]==="resolved";
+  const adv=resolved? new Set(S.results[k]):null;
+  const ranked=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+  const bars=ranked.map(t=>{
+    const pct=total?Math.round(counts[t]/total*100):0;
+    const out=resolved && !adv.has(t);
+    return `<div class="pctrow">
+      <span class="lab">${TEAMS[t].flag} ${TEAMS[t].name} ${resolved?(adv.has(t)?'<span class="badge alive">ADV</span>':'<span class="badge out">OUT</span>'):''}</span>
+      <div class="pctbar"><i style="width:${pct}%;${out?'background:linear-gradient(90deg,#a33,#ff5d6c)':''}"></i></div>
+      <span class="val">${pct}% · ${counts[t]}</span></div>`;
+  }).join("");
+  // all entries' picks for this round (only those alive entering)
+  const rows=S.entries.filter(e=>aliveEntering(e,k)).map(e=>{
+    const p=e.picks[k];
+    const ok = !resolved? '' : (p&&adv.has(p)?'style="color:var(--green)"':'style="color:var(--red);text-decoration:line-through"');
+    return `<tr class="${e.isUser?'you-row':''}">
+      <td><b>${e.name}</b>${e.isUser?' <span class="tag">(you)</span>':''}</td>
+      <td ${ok}>${p?TEAMS[p].flag+' '+TEAMS[p].name:'<span class="muted">no pick</span>'}</td>
+      <td>${resolved?`<span class="badge ${(p&&adv.has(p))?'alive':'out'}">${(p&&adv.has(p))?'ADVANCED':'OUT'}</span>`:'<span class="badge locked">locked</span>'}</td>
+    </tr>`;
+  }).join("");
+  return `<div class="panel"><h2>📊 ${roundDef(k).name} pick percentages <span class="tag">(${total} entries alive)</span></h2>${bars||'<p class="muted">No picks recorded.</p>'}</div>
+    <div class="panel"><h2>🗂️ All surviving entries — ${roundDef(k).name} picks</h2><div class="tablewrap"><table>
+    <tr><th>Entry</th><th>Pick</th><th>Result</th></tr>${rows}</table></div></div>`;
+}
+
+/* ============================================================
+   PAGE 5 — STANDINGS
+   ============================================================ */
+function pageStandings(){
+  const enriched=S.entries.map(e=>{ const st=entryStatus(e); return {e,st}; });
+  // rank: alive first, then by elimination round (later = better), then name
+  enriched.sort((a,b)=>{
+    const ra=a.st.alive?99:roundIndex(a.st.eliminated);
+    const rb=b.st.alive?99:roundIndex(b.st.eliminated);
+    if(rb!==ra) return rb-ra;
+    return a.e.name.localeCompare(b.e.name);
+  });
+  const alive=enriched.filter(x=>x.st.alive).length;
+  const rows=enriched.map((x,i)=>{
+    const e=x.e, st=x.st;
+    const reached = st.alive? currentRound() : st.eliminated;
+    return `<tr class="${e.isUser?'you-row':''}">
+      <td class="center"><b>${i+1}</b></td>
+      <td><b>${e.name}</b>${e.isUser?' <span class="tag">(you)</span>':''}</td>
+      <td>${st.alive?'<span class="badge alive">● ALIVE</span>':'<span class="badge out">✕ OUT</span>'}</td>
+      <td>${st.alive? roundDef(reached).name : roundDef(st.eliminated).name}</td>
+      <td class="muted" style="font-size:.82rem">${st.alive?'Still in it':(st.reason||'')}</td>
+    </tr>`;
+  }).join("");
+  let banner="";
+  if(S.phase.FINAL==="resolved"){
+    const survivors=enriched.filter(x=>x.st.alive).map(x=>x.e.name);
+    banner = survivors.length? `<div class="notice ok"><span>🏆</span><div><b>Winner${survivors.length>1?'s (co-winners)':''}:</b> ${survivors.join(", ")}</div></div>`
+      : `<div class="notice warn"><span>🤷</span><div>No survivors through the Final.</div></div>`;
+  }
+  return `
+  <h1 class="page">Live Standings</h1>
+  <p class="sub">Surviving entries ranked first; eliminated entries remain visible with their elimination round.</p>
+  ${banner}
+  <div class="grid cols-3" style="margin-bottom:20px">
+    <div class="stat green"><div class="num">${alive}</div><div class="lbl">Alive</div></div>
+    <div class="stat red"><div class="num">${S.entries.length-alive}</div><div class="lbl">Eliminated</div></div>
+    <div class="stat blue"><div class="num">${roundDef(currentRound()).name}</div><div class="lbl">Current Round</div></div>
+  </div>
+  <div class="panel"><div class="tablewrap"><table>
+    <tr><th class="center">#</th><th>Entry</th><th>Status</th><th>Round Reached / Out</th><th>Detail</th></tr>
+    ${rows}
+  </table></div></div>`;
+}
+
+/* ============================================================
+   PAGE 6 — PICK HISTORY (your full journey)
+   ============================================================ */
+function pageHistory(){
+  const you=userEntry();
+  const st=entryStatus(you);
+  // Group stage row
+  let rows="";
+  const gResolved=S.phase.GROUP==="resolved";
+  const gAdv=gResolved? new Set(S.results.GROUP):null;
+  const gPicks=(you.group||[]);
+  let gResult="—";
+  if(gResolved){
+    const failed=gPicks.filter(t=>!gAdv.has(t));
+    gResult = failed.length? `<span class="badge out">OUT — ${failed.map(t=>TEAMS[t].name).join(", ")} failed</span>`
+                           : `<span class="badge alive">ALL 4 ADVANCED</span>`;
+  } else if(S.phase.GROUP!=="open"){ gResult=`<span class="badge locked">locked</span>`; }
+  rows += `<tr>
+    <td><b>Group Stage</b></td>
+    <td>${gPicks.length? gPicks.map(t=>`${TEAMS[t].flag} ${TEAMS[t].name}`).join(", "):'<span class="muted">no picks</span>'}</td>
+    <td>${gResult}</td></tr>`;
+  // KO rows
+  KO_ROUNDS.forEach(k=>{
+    const ph=S.phase[k];
+    const p=you.picks[k];
+    let res="—";
+    if(ph==="resolved" && S.results[k]){
+      if(!p) res=`<span class="badge out">no pick</span>`;
+      else res = S.results[k].includes(p)? `<span class="badge alive">${k==='FINAL'?'CHAMPION 🏆':'ADVANCED'}</span>`:`<span class="badge out">OUT</span>`;
+    } else if(ph==="locked"){ res=`<span class="badge locked">locked</span>`; }
+    else if(ph==="open"){ res=`<span class="badge open">open</span>`; }
+    else { res=`<span class="badge upcoming">upcoming</span>`; }
+    // only show meaningful if reached
+    const reached = roundIndex(k) <= (st.alive? ROUND_KEYS.length : roundIndex(st.eliminated));
+    rows += `<tr style="${reached?'':'opacity:.5'}">
+      <td><b>${roundDef(k).name}</b></td>
+      <td>${p?`${TEAMS[p].flag} ${TEAMS[p].name}`:(reached?'<span class="muted">no pick yet</span>':'<span class="muted">n/a</span>')}</td>
+      <td>${res}</td></tr>`;
+  });
+  return `
+  <h1 class="page">Pick History</h1>
+  <p class="sub">Your complete pick-by-pick journey through the contest.</p>
+  <div class="panel">
+    <div class="flexrow" style="margin-bottom:14px">
+      <h2 style="margin:0">${you.name}</h2>
+      <span class="badge ${st.alive?'alive':'out'}">${st.alive?'● ALIVE':'✕ Eliminated — '+roundDef(st.eliminated).name}</span>
+    </div>
+    <div class="tablewrap"><table>
+      <tr><th>Round</th><th>Your Pick(s)</th><th>Result</th></tr>${rows}
+    </table></div>
+  </div>
+  <p class="muted" style="font-size:.85rem">Tip: switch to the <a href="#" onclick="go('tracker');return false">Entry Tracker</a> to see every entry's full pick history side-by-side.</p>`;
+}
+
+/* ============================================================
+   PAGE 7 — ENTRY TRACKER (everyone × every round)
+   ============================================================ */
+function pageTracker(){
+  // visibility per round: only show others' picks if round locked/resolved
+  const visible = k => S.phase[k]==="locked" || S.phase[k]==="resolved";
+  const gVisible = S.phase.GROUP!=="open";
+  const enriched=S.entries.map(e=>({e,st:entryStatus(e)}));
+  enriched.sort((a,b)=>{
+    const ra=a.st.alive?99:roundIndex(a.st.eliminated);
+    const rb=b.st.alive?99:roundIndex(b.st.eliminated);
+    if(rb!==ra) return rb-ra; return a.e.name.localeCompare(b.e.name);
+  });
+  const head=`<tr><th>Entry</th><th>Status</th><th>Group (4)</th>${KO_ROUNDS.map(k=>`<th>${roundDef(k).name}</th>`).join("")}</tr>`;
+  const cellTeam=(t,roundKey)=>{
+    if(!t) return '<span class="muted">—</span>';
+    if(roundKey && S.phase[roundKey]==="resolved" && S.results[roundKey]){
+      const ok=S.results[roundKey].includes(t);
+      return `<span style="color:${ok?'var(--green)':'var(--red)'};${ok?'':'text-decoration:line-through'}">${TEAMS[t].flag}</span>`;
+    }
+    return `${TEAMS[t].flag}`;
+  };
+  const rows=enriched.map(({e,st})=>{
+    const isYou=e.isUser;
+    // group cell
+    let gcell;
+    if(gVisible || isYou){
+      const gResolved=S.phase.GROUP==="resolved";
+      const adv=gResolved?new Set(S.results.GROUP):null;
+      gcell=(e.group||[]).map(t=>{
+        const c = gResolved? (adv.has(t)?'var(--green)':'var(--red)') : 'inherit';
+        return `<span title="${TEAMS[t].name}" style="color:${c}">${TEAMS[t].flag}</span>`;
+      }).join(" ")||'<span class="muted">—</span>';
+    } else { gcell='<span class="badge neutral">hidden</span>'; }
+    const koCells=KO_ROUNDS.map(k=>{
+      const p=e.picks[k];
+      // before lock: hide others
+      if(!visible(k) && !isYou){
+        if(S.phase[k]==="open") return `<td><span class="muted">…</span></td>`;
+        return `<td><span class="muted">—</span></td>`;
+      }
+      if(!aliveEntering(e,k) && !p) return `<td><span class="muted">·</span></td>`;
+      return `<td title="${p?TEAMS[p].name:''}">${cellTeam(p,k)}</td>`;
+    }).join("");
+    return `<tr class="${isYou?'you-row':''}">
+      <td><b>${e.name}</b>${isYou?' <span class="tag">(you)</span>':''}</td>
+      <td><span class="badge ${st.alive?'alive':'out'}">${st.alive?'ALIVE':roundDef(st.eliminated).name}</span></td>
+      <td style="white-space:nowrap;font-size:1.05rem">${gcell}</td>
+      ${koCells}</tr>`;
+  }).join("");
+  return `
+  <h1 class="page">Entry Tracker</h1>
+  <p class="sub">Every entry, every round. Flags turn <span style="color:var(--green)">green</span> when the pick advanced, <span style="color:var(--red)">red</span> when it busted. Hover a flag for the team name.</p>
+  <div class="notice info"><span>👁️</span><div>Other entries' picks for a round are hidden until that round <b>locks</b> — then everything becomes public, exactly like the live contest.</div></div>
+  <div class="panel"><div class="tablewrap"><table>${head}${rows}</table></div></div>`;
+}
+
+/* ---------- boot ---------- */
+load();
+render();
+window.go=go;window.toggleGroup=toggleGroup;window.saveGroup=saveGroup;
+window.koView=koView;window.pickKO=pickKO;window.saveKO=saveKO;
+window.cmdOpen=cmdOpen;window.cmdLock=cmdLock;window.cmdResolve=cmdResolve;
+window.cmdAutoFinish=cmdAutoFinish;window.cmdReset=cmdReset;
+window.DRAFT_GROUP=DRAFT_GROUP;
+</script>
+</body>
+</html>
